@@ -1,0 +1,20 @@
+---
+# Playbook para a instalacao e configuracao da aplicacao e banco de dados
+ - hosts: tag_Name_teampass
+   remote_user: admin
+   gather_facts: no
+   pre_tasks:
+    - name: Instala os pacotes necessarios
+      apt:
+       name: ['python3-apt']
+    - name: reune informacoes sobre o sistema operacional
+      setup:
+      tags: [ 'always' ]
+    - name: atualiza os pacotes do SO
+      apt:
+       upgrade: yes
+       update_cache: yes
+       cache_valid_time: 3600
+
+   roles:
+    - { role: teampass, tags: [ 'teampass' ] }

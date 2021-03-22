@@ -1,0 +1,56 @@
+---
+# tasks file for roles/rds
+
+ - name: Cria os grupos de seguranca para o banco de dados RDS
+   ec2_group:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    state: present
+    region: "{{ aws_region }}"
+    vpc_id: "{{ vpc_id }}"
+    name: "RDS-SG"
+    description: "SG para banco de dados RDS"
+    rules:
+      - proto: tcp
+        from_port: 3306
+        to_port: 3306
+        cidr_ip: "{{ public_subnet_1_cidr }}"
+      - proto: tcp
+        from_port: 3306
+        to_port: 3306
+        cidr_ip: "{{ public_subnet_2_cidr }}" 
+   register: RDS_sg
+   tags: [ 'RDS-ec2' ]
+
+ - name: Cria a Subnet Group para o DB MariaDB
+   rds_subnet_group:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    state: present
+    name: RDS-mariadb-subg
+    description: Subnet Group para o DB MariaDB
+    region: "{{ aws_region }}"
+    subnets:
+      - "{{ private_subnet1_id }}"
+      - "{{ private_subnet2_id }}"
+
+
+ - name: Cria o banco de dados RDS
+   rds:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    command: create
+    instance_name: teampass
+    region: "{{ aws_region }}"
+    db_engine: mariadb
+    size: "20"
+    instance_type: db.t2.micro
+    username: teampass_admin
+    password: password
+    db_name: teampass
+    subnet: RDS-mariadb-subg
+    vpc_security_groups: "{{ RDS_sg.group_id }}"
+    publicly_accessible: no
+    tags:
+      Environment: production
+      Application: teampass

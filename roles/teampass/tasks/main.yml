@@ -1,0 +1,39 @@
+---
+# tasks file for roles/teampass
+
+  - name: Instala os pacotes necessarios
+    apt:
+      name: ['php', 'php7.3-curl', 'php7.3-mysql', 'mcrypt', 'php7.3-mbstring', 'php7.3-bcmath', 'php7.3-gd', 
+'php7.3-xml']
+
+  - name: Atualiza o parametro max_execution_time
+    lineinfile:
+      dest: /etc/php/7.3/apache2/php.ini
+      state: present
+      backup: yes
+      backrefs: yes
+      regexp: "max_execution_time = 30"
+      line: "max_execution_time = 60"
+    notify:
+    - reinicia apache
+
+  - name: Baixa do TeamPass 3.0.0.7
+    get_url:
+      url=https://github.com/nilsteampassnet/TeamPass/archive/3.0.0.7.tar.gz
+      dest=/tmp/TeamPass-3.0.0.7.tar.gz
+      validate_certs=no
+
+  - name: Descompacta o TeamPass
+    unarchive:
+      src: /tmp/TeamPass-3.0.0.7.tar.gz
+      dest: /var/www/html
+      remote_src: yes
+      creates: /var/www/html/TeamPass-3.0.0.7
+
+  - name: Modifica permissao na pasta TeamPass
+    file:
+      path: /var/www/html/TeamPass-3.0.0.7
+      owner: admin
+      group: www-data
+      mode: "0777"
+      recurse: yes

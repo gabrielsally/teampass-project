@@ -1,0 +1,37 @@
+---
+
+- name: Create a target group with instance targets
+  elb_target_group:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    name: teampass-tg
+    region: "{{ aws_region }}"
+    target_type: instance
+    protocol: tcp
+    port: 80
+    targets:
+      - Id: "{{ instance_id1 }}"
+        Port: 80
+      - Id: "{{ instance_id2 }}"
+        Port: 80
+    stickiness_type: source_ip
+    vpc_id: "{{ vpc_id }}"
+    state: present
+
+- name: Create an ELB and attach a listener
+  elb_network_lb:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    name: teampass-lb
+    region: "{{ aws_region }}"
+    subnets:
+      - "{{ public_subnet_id1 }}"
+      - "{{ public_subnet_id2 }}"
+    listeners:
+      - Protocol: TCP 
+        Port: 80
+        DefaultActions:
+          - Type: forward
+            TargetGroupName: teampass-tg
+    state: present
+

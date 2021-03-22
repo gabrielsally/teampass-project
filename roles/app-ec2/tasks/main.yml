@@ -1,0 +1,85 @@
+---
+# tasks file for roles/app-ec2
+ - name: Cria os grupos de seguranca para o teampass
+   ec2_group:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    state: present
+    region: "{{ aws_region }}"
+    vpc_id: "{{ vpc_id }}"
+    name: "teampass-SG"
+    description: "SG para a aplicacao"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+   register: teampassec2_sg
+   tags: [ 'teampass-ec2' ]
+
+
+ - name: Inicia a instancia para aplicacao 1
+   ec2_instance:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    vpc_subnet_id: "{{ public_subnet_id1 }}"
+    security_group: "{{ teampassec2_sg.group_id }}"
+    instance_type: "{{ instance_type }}"
+    image_id: "{{ image_debian }}"
+    wait: yes
+    network:
+      assign_public_ip: true
+    key_name: "{{ keypair_name }}"
+    volumes:
+      - device_name: /dev/xvda
+        ebs:
+          volume_type: gp2
+          volume_size: "{{ volume_size }}"
+    name: "teampass"
+    tags:
+      Environment: Production
+   register: instance_data_1
+ - debug: msg="{{ instance_data_1.instances }}"  
+ - debug: msg="{{ instance_data_1.instances[0].instance_id }}"
+
+ - name: Salva o ID da instancia
+   set_fact:
+     instance_id1: "{{ instance_data_1.instances[0].instance_id }}"
+
+
+ - name: Inicia a instancia para aplicacao 2
+   ec2_instance:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    vpc_subnet_id: "{{ public_subnet_id2 }}"
+    security_group: "{{ teampassec2_sg.group_id }}"
+    instance_type: "{{ instance_type }}"
+    image_id: "{{ image_debian }}"
+    wait: yes
+    network:
+      assign_public_ip: true
+    key_name: "{{ keypair_name }}"
+    volumes:
+      - device_name: /dev/xvda
+        ebs:
+          volume_type: gp2
+          volume_size: "{{ volume_size }}"
+    name: "teampass"
+    tags:
+      Environment: Production
+   register: instance_data_2
+ - debug: msg="{{ instance_data_2.instances }}"  
+ - debug: msg="{{ instance_data_2.instances[0].instance_id }}"
+
+ - name: Salva o ID da instancia
+   set_fact:
+     instance_id2: "{{ instance_data_2.instances[0].instance_id }}"
