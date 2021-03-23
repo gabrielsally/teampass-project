@@ -1,6 +1,6 @@
 ---
- aws_access_key: "AKIAZNLY5GEYKLPYCBYR"
- aws_secret_key: "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"
+ aws_access_key: "zzzz"
+ aws_secret_key: "yyyyyyyyyyyyyy"
 
  application: "teampass"
  target_env: "prod"
@@ -15,7 +15,7 @@
  private_subnet_1_cidr: "10.0.40.0/25"
  private_subnet_2_cidr: "10.0.50.0/25"
  keypair_name: "gfsr-key"
- ssh_pubkey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8aHVTMycotNJXKr9MwXu1eHT8+E+fq4S9q4FrpGl3VNs3PSC5oYqpeSFod50umpv2bRjV4T41jhF3APB0VSVP5TDTWRcdz8xEhVhX7BQw5n/ICz66eIK6XRhl75rYsLI+eKvTCYihygQ0FDygdoEUPBn04BM06ZDg3W4HjRySfl2m46Wud3Z6sSuK79v4wWIiH627zdWQMdlYoCgSH6+oefLsVgmiADX8SNmd8UEg1SGgqAafke46ZnwusMIfsFFTjdd7qVp88bbkS4m5GKW/P+U7itkpVItOcI/12rYFPHu4pkBAA+Pf3k0V0o8WdGXXE9pC4ZSRWBsLnwgEw/v5R7Hqm9CZHfTEo1KeStW30SvKwM8DOhWE5rbvOo4NEnAksYYkxEMAAC1HVet7qKPBDaXB+fZ+Rv180+O+Pd7EZa/bzG4xNqRxRZIk+SNm90W2ZwJeA0k/z2d/UMH/FIHdps9Du36nkjpp6HeaDkVxg5BsAX6vi/RZUcOyYJgUVoM= grezende@ubuntu'
+ ssh_pubkey: 'COLAR SUA PUBLIC KEY'
  image_debian: "ami-07d02ee1eeb0c996c"
  instance_type: "t2.micro"
  volume_size: "8"
